@@ -1,0 +1,23 @@
+{
+	"name": "csv-file-node",
+	"version": "1.0.0",
+	"description": "MERN Stack CSV Uploader",
+	"main": "index.js",
+	"scripts": {
+		"start": "concurrently \"cd backend && npm run dev\" \"cd frontend && npm start\""
+	},
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/jadilovic/csv-uploader.git"
+	},
+	"keywords": [],
+	"author": "",
+	"license": "ISC",
+	"bugs": {
+		"url": "https://github.com/jadilovic/csv-uploader/issues"
+	},
+	"homepage": "https://github.com/jadilovic/csv-uploader#readme",
+	"dependencies": {
+		"concurrently": "^8.2.0"
+	}
+}
