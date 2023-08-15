@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import axios from 'axios';
 import Avatar from '@mui/material/Avatar';
 import CssBaseline from '@mui/material/CssBaseline';
@@ -13,6 +13,7 @@ export default function UpLoad() {
 	const [file, setFile] = useState('');
 	const [people, setPeople] = useState([]);
 	const [loading, setLoading] = useState(true);
+	const inputRef = useRef(null);
 
 	useEffect(() => {
 		getPeopleFromDatabase();
@@ -34,8 +35,8 @@ export default function UpLoad() {
 						'Content-Type': 'multipart/form-data',
 					},
 				});
-				setLoading(false);
 				setFile('');
+				resetFileInput();
 			} catch (error) {
 				console.error('Error uploading file:', error);
 			}
@@ -50,6 +51,10 @@ export default function UpLoad() {
 		} catch (error) {
 			console.log(error);
 		}
+	};
+
+	const resetFileInput = () => {
+		inputRef.current.value = null;
 	};
 
 	return (
@@ -71,6 +76,7 @@ export default function UpLoad() {
 				</Typography>
 				<form>
 					<input
+						ref={inputRef}
 						style={{ marginTop: '3em', cursor: 'pointer' }}
 						type={'file'}
 						id={'csvFileInput'}
