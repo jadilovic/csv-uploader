@@ -2,7 +2,23 @@ const fs = require('fs');
 const { parse } = require('csv-parse');
 const Person = require('../models/Person');
 
-const readDownloadedFile = async (path) => {
+const saveToDatabase = async (counter, rowData, res) => {
+	try {
+		counter.save++;
+		const newPerson = new Person(rowData);
+		await newPerson.save();
+		console.log(counter);
+		if (counter.read === counter.save) {
+			console.log('test res: ', res.rawHeaders);
+			return res.status(200).json({ message: 'All persons saved to database' });
+		}
+	} catch (error) {
+		console.error('Error saving data to MongoDB:', error.message);
+	}
+};
+
+const readDownloadedFile = async (path, res) => {
+	const counter = { read: 0, save: 0 };
 	fs.createReadStream(path)
 		.pipe(
 			parse({
@@ -12,6 +28,7 @@ const readDownloadedFile = async (path) => {
 			})
 		)
 		.on('data', async (csvFileRowObject) => {
+			counter.read++;
 			try {
 				const rowDataForMongo = {
 					index: csvFileRowObject['Index'],
@@ -22,8 +39,10 @@ const readDownloadedFile = async (path) => {
 					dateOfBirth: csvFileRowObject['Date of birth'],
 					jobTitle: csvFileRowObject['Job Title'],
 				};
-				const newPerson = new Person(rowDataForMongo);
-				await newPerson.save();
+				saveToDatabase(counter, rowDataForMongo, res);
+				// const newPerson = new Person(rowDataForMongo);
+				// await newPerson.save();
+				// countSave++;
 			} catch (error) {
 				console.error('Error saving data to MongoDB:', error.message);
 			}
@@ -37,13 +56,14 @@ const readDownloadedFile = async (path) => {
 					throw err;
 				}
 			});
+			console.log(counter);
 		});
 };
 
 exports.readAndSaveToDatabase = async (req, res) => {
 	try {
-		await readDownloadedFile(req.file.path);
-		res.status(200).json({ message: 'File uploaded successfully' });
+		await readDownloadedFile(req.file.path, res);
+		// res.status(200).json({ message: 'File uploaded successfully' });
 	} catch (error) {
 		console.error('Error processing file:', error);
 		res.status(500).json({ error: 'Internal server error' });

@@ -30,11 +30,12 @@ export default function UpLoad() {
 			try {
 				const formData = new FormData();
 				formData.append('file', file);
-				await axios.post('http://localhost:8000/upload', formData, {
+				const res = await axios.post('http://localhost:8000/upload', formData, {
 					headers: {
 						'Content-Type': 'multipart/form-data',
 					},
 				});
+				console.log('res front end: ', res.data);
 				setFile('');
 				resetFileInput();
 			} catch (error) {
@@ -55,6 +56,16 @@ export default function UpLoad() {
 
 	const resetFileInput = () => {
 		inputRef.current.value = null;
+	};
+
+	const deleteAll = async () => {
+		try {
+			setLoading(true);
+			await axios.delete('http://localhost:8000/people');
+			getPeopleFromDatabase();
+		} catch (error) {
+			console.log(error.message);
+		}
 	};
 
 	return (
@@ -96,6 +107,18 @@ export default function UpLoad() {
 						Import CSV File
 					</Button>
 				</form>
+				<Button
+					type="button"
+					color="error"
+					fullWidth
+					variant="contained"
+					sx={{ mt: 3, mb: 2 }}
+					onClick={() => {
+						deleteAll();
+					}}
+				>
+					Delete All
+				</Button>
 			</Box>
 			{loading ? (
 				<Alert>Loading...</Alert>
