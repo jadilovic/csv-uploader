@@ -4,7 +4,8 @@
 	"description": "MERN Stack CSV Uploader",
 	"main": "index.js",
 	"scripts": {
-		"start": "concurrently \"cd backend && npm run dev\" \"cd frontend && npm start\""
+		"start": "concurrently \"cd backend && npm run dev\" \"cd frontend && npm start\"",
+		"dev": "nodemon index.js"
 	},
 	"repository": {
 		"type": "git",
@@ -18,6 +19,9 @@
 	},
 	"homepage": "https://github.com/jadilovic/csv-uploader#readme",
 	"dependencies": {
-		"concurrently": "^8.2.0"
+		"axios": "^1.4.0",
+		"concurrently": "^8.2.0",
+		"dotenv": "^16.3.1",
+		"nodemon": "^3.0.1"
 	}
 }
